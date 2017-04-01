@@ -1,8 +1,14 @@
-var FlashModel = require('./models/FlashModel')
+var App = require('./App')
 
-$(function () {
-  var model = new FlashModel();
-  var root = document.createElement('div');
-  root.innerHTML = 'Привет мир!';
-  document.body.appendChild(root);
-})
+function run() {
+  var app = App.getInstance();
+  app.run();
+
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('load', run);
+
+}
+
+
