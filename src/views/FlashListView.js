@@ -1,5 +1,5 @@
 var Event = require('../services/EventDispatcher')
-var SimpleFlash = require('../models/SimpleFlash')
+var SimpleFlash = require('../views/SimpleFlash')
 
 var FlashListView = function (model) {
   this.model = model;
