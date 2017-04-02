@@ -6,9 +6,13 @@ var SingletoneApp = (function () {
 
   function createInstance() {
     return {
-      run: function(){
-        new Panel();
+      createChildren: function() {
+        $('body').append('<div class="container"></div>');
         new List();
+      },
+      run: function(){
+        this.createChildren();
+
       }
 
     }

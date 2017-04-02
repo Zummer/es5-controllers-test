@@ -1,0 +1,56 @@
+.flash-list {
+  list-style-type: none;
+  padding: 0;
+
+  .flash {
+    max-height: 1000px;
+    opacity: 1;
+    margin: 0 0;
+    overflow: hidden;
+    transition: all .3s, border 0s;
+
+    &.selected {
+      border: 2px solid;
+
+    }
+
+    &:hover {
+      transform: scale(1.03);
+      box-shadow: 3px 13px 37px -16px #636363;
+
+    }
+
+    &.show {
+      opacity: 1;
+      max-height: 1000px;
+      margin: 5px 0;
+    }
+  }
+}
+
+.form-group {
+  &.header {
+    margin-top: 20px;
+  }
+}
+
+.panel-body {
+  span {
+    margin: 0 15px;
+
+    .selected, .all {
+
+      border: solid 1px #ccc;
+      border-radius: 3px;
+      padding: 5px;
+
+
+      .green {
+        color: green;
+      }
+      .red {
+        color: red;
+      }
+    }
+  }
+}

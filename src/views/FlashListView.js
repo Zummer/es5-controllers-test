@@ -1,5 +1,6 @@
 var Event = require('../services/EventDispatcher')
 var SimpleFlash = require('../views/SimpleFlash')
+var Template = require('../templates/flashTemplate')
 
 var FlashListView = function (model) {
   this.model = model;
@@ -23,20 +24,11 @@ FlashListView.prototype = {
   },
 
   createChildren: function () {
-
-    var container = $('<div class="js-container"></div>');
-    $('body').append(container);
-    container.append('<input type="text" class="js-flash-textbox">');
-    container.append('<input type="button" class="js-add-flash-button" value="Add flash">');
-    container.append('<div class="js-flashes-container"></div>');
-    container.append('<input type="button" class="js-complete-flash-button" value="Complete flashs">');
-    container.append('<input type="button" class="js-delete-flash-button" value="Delete flashs">');
-
     // cache the document object
-    this.$container = $('.js-container');
+    this.$container = $('.container');
+    this.$container.append((new Template).defaultTemplate);
     this.$addFlashButton = this.$container.find('.js-add-flash-button');
-    this.$flashTextBox = this.$container.find('.js-flash-textbox');
-    this.$flashesContainer = this.$container.find('.js-flashes-container');
+    this.$flashesContainer = this.$container.find('.flash-list');
 
     return this;
 
@@ -52,7 +44,6 @@ FlashListView.prototype = {
     /* Handlers from Event Dispatcher */
 
     this.addFlashHandler = this.addFlash.bind(this);
-    this.clearFlashTextBoxHandler = this.clearFlashTextBox.bind(this);
     this.setFlashesAsCompletedHandler = this.setFlashesAsCompleted.bind(this);
     this.deleteFlashesHandler = this.deleteFlashes.bind(this);
 
@@ -63,13 +54,10 @@ FlashListView.prototype = {
   enable: function () {
 
     this.$addFlashButton.click(this.addFlashButtonHandler);
-    this.$container.on('click', '.js-flash', this.selectOrUnselectFlashHandler);
-    this.$container.on('click', '.js-complete-flash-button', this.completeFlashButtonHandler);
-    this.$container.on('click', '.js-delete-flash-button', this.deleteFlashButtonHandler);
+    this.$container.on('click', '.flash', this.selectOrUnselectFlashHandler);
 
     /* Event Dispatcher */
     this.model.addFlashEvent.attach(this.addFlashHandler);
-    this.model.addFlashEvent.attach(this.clearFlashTextBoxHandler);
     this.model.setFlashesAsCompletedEvent.attach(this.setFlashesAsCompletedHandler);
     this.model.deleteFlashesEvent.attach(this.deleteFlashesHandler);
 
@@ -79,7 +67,7 @@ FlashListView.prototype = {
 
   addFlashButton: function () {
     this.addFlashEvent.notify({
-      flash: this.$flashTextBox.val()
+      flash: ''
 
     });
 
@@ -90,8 +78,8 @@ FlashListView.prototype = {
 
   },
 
-  deleteFlashButton: function () {
-    this.deleteFlashEvent.notify();
+  deleteFlashButton: function (index) {
+    this.deleteFlashEvent.notify(index);
 
   },
 
@@ -119,31 +107,25 @@ FlashListView.prototype = {
   },
 
   render: function () {
-    this.buildList();
 
-  },
 
-  buildList: function () {
     var flashes = this.model.getFlashes();
     var html = "";
-    var $flashesContainer = this.$flashesContainer;
-
-    $flashesContainer.html('');
+    this.$flashesContainer.html('');
 
     for (var key in flashes) {
 
       var flash;
 
       if (flashes[key].hasOwnProperty('color')) {
-        flash = new SimpleFlash(flashes[key], key);
+        flash = new SimpleFlash(flashes[key], key, this.deleteFlashButtonHandler);
 
       } else {
-        flash = new SimpleFlash(flashes[key], key);
+        flash = new SimpleFlash(flashes[key], key, this.deleteFlashButtonHandler);
 
       }
 
-      html = flash.render();
-      $flashesContainer.append(html);
+      flash.render();
 
     }
 
@@ -152,10 +134,10 @@ FlashListView.prototype = {
 
   /* -------------------- Handlers From Event Dispatcher ----------------- */
 
-  clearFlashTextBox: function () {
-    this.$flashTextBox.val('');
-
-  },
+  //clearFlashTextBox: function () {
+  //  this.$flashTextBox.val('');
+  //
+  //},
 
   addFlash: function () {
     this.render();

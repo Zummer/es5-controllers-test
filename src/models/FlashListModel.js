@@ -53,19 +53,9 @@ FlashListModel.prototype = {
   },
 
 
-  deleteFlashes: function () {
-    var selectedFlashes = this.selectedFlashes.sort();
-
-    for (var i = selectedFlashes.length - 1; i >= 0; i--) {
-      this.flashes.splice(this.selectedFlashes[i], 1);
-
-    }
-
-    // clear the selected flashes
-    this.selectedFlashes = [];
-
+  deleteFlashes: function (index) {
+    this.flashes.splice(index, 1);
     this.deleteFlashesEvent.notify();
-
 
   }
 
