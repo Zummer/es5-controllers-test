@@ -1,8 +1,7 @@
 var Template = require('../templates/flashTemplate')
 
-function Flash (data, index) {
+function Flash (data) {
   this.data = data;
-  this.index = index;
 
   this.render();
 }
@@ -11,7 +10,11 @@ Flash.prototype = {
 
   render: function () {
     this.$parent = $('.flash-list');
-    this.$parent.append((new Template).flash(this.data, this.index));
+    this.$parent.append((new Template).flash(this.data));
+    var self = this;
+    setTimeout(function(){
+      $('#' + self.data.id).toggleClass('show');
+    }, 10);
 
   }
 

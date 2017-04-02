@@ -13,12 +13,15 @@ var FlashModel = function () {
 
 };
 
+var nextFlashId = 0;
+
 FlashModel.prototype = {
 
   addFlash: function () {
 
     var maybeExtendedFlash = Math.random() > 0.5;
     var flash = {
+      id: nextFlashId++,
       text: loremIpsum({
         count: 3
 
@@ -35,7 +38,7 @@ FlashModel.prototype = {
     }
 
     this.flashes.push(flash);
-    this.addFlashEvent.notify();
+    this.addFlashEvent.notify(flash.id);
 
   },
 
@@ -57,47 +60,26 @@ FlashModel.prototype = {
 
   },
 
-
-
-  setSelectedFlash: function (flashIndex) {
-    this.flashes[flashIndex].selected = !this.flashes[flashIndex].selected;
+  setSelectedFlash: function (id) {
+    var flash = this.flashes.find(t => t.id == id);
+    flash.selected = !flash.selected;
     this.selectFlashEvent.notify();
 
   },
 
-  toggleColorFlash: function (flashIndex) {
-    this.flashes[flashIndex].color = this.flashes[flashIndex].color == 'danger' ? 'success' : 'danger';
+  toggleColorFlash: function (id) {
+    var flash = this.flashes.find(t => t.id == id);
+    flash.color = flash.color == 'danger' ? 'success' : 'danger';
     this.toggleColorFlashEvent.notify();
 
   },
 
-  unselectFlash: function (flashIndex) {
-    this.selectedFlashes.splice(flashIndex, 1);
-
-  },
-
-  setFlashesAsCompleted: function () {
-    var selectedFlashes = this.selectedFlashes;
-    for (var index in selectedFlashes) {
-      this.flashes[selectedFlashes[index]].selected = true;
-
-    }
-
-    this.setFlashesAsCompletedEvent.notify();
-
-    this.selectedFlashes = [];
-
-
-  },
-
-
-  deleteFlashes: function (index) {
+  deleteFlashes: function (id) {
+    var index = this.flashes.findIndex(t => t.id == id);
     this.flashes.splice(index, 1);
-    this.deleteFlashesEvent.notify();
+    this.deleteFlashesEvent.notify(id);
 
   }
-
-
 
 };
 

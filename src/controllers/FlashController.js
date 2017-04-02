@@ -27,8 +27,6 @@ FlashController.prototype = {
 
     this.addFlashHandler = this.addFlash.bind(this);
     this.selectFlashHandler = this.selectFlash.bind(this);
-    this.unselectFlashHandler = this.unselectFlash.bind(this);
-    this.completeFlashHandler = this.completeFlash.bind(this);
     this.deleteFlashHandler = this.deleteFlash.bind(this);
     this.toggleColorFlashHandler = this.toggleColorFlash.bind(this);
     return this;
@@ -38,10 +36,8 @@ FlashController.prototype = {
   enable: function () {
 
     this.view.addFlashEvent.attach(this.addFlashHandler);
-    this.view.completeFlashEvent.attach(this.completeFlashHandler);
     this.view.deleteFlashEvent.attach(this.deleteFlashHandler);
     this.view.selectFlashEvent.attach(this.selectFlashHandler);
-    this.view.unselectFlashEvent.attach(this.unselectFlashHandler);
     this.view.toggleColorFlashEvent.attach(this.toggleColorFlashHandler);
 
     return this;
@@ -50,32 +46,22 @@ FlashController.prototype = {
 
 
   addFlash: function (sender, args) {
-    this.model.addFlash(args.flash);
+    this.model.addFlash();
 
   },
 
   selectFlash: function (sender, args) {
-    this.model.setSelectedFlash(args.flashIndex);
+    this.model.setSelectedFlash(args.id);
 
   },
 
   toggleColorFlash: function (sender, args) {
-    this.model.toggleColorFlash(args.flashIndex);
-
-  },
-
-  unselectFlash: function (sender, args) {
-    this.model.unselectFlash(args.flashIndex);
-
-  },
-
-  completeFlash: function () {
-    this.model.setFlashesAsCompleted();
+    this.model.toggleColorFlash(args.id);
 
   },
 
   deleteFlash: function (sender, args) {
-    this.model.deleteFlashes(args.flashIndex);
+    this.model.deleteFlashes(args.id);
 
   }
 

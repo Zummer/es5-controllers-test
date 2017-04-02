@@ -48,11 +48,11 @@ function Template() {
 
   }
 
-  this.flash = function(data, index){
+  this.flash = function(data){
 
     var template
-      = '<li class="{{initialClass}}" data-index="{{index}}"}>{{text}}'
-      +   '<button class="close" data-index="{{index}}">&times;</button>'
+      = '<li id="{{id}}" class="{{initialClass}}" data-index="{{id}}"}>{{text}}'
+      +   '<button class="close" data-index="{{id}}">&times;</button>'
       + '</li>';
 
     var initialClass = "flash-item alert alert-info";
@@ -66,7 +66,7 @@ function Template() {
     }
 
     template = template.replace(/{{initialClass}}/g, initialClass);
-    template = template.replace(/{{index}}/g, index);
+    template = template.replace(/{{id}}/g, data.id);
     template = template.replace(/{{text}}/g, data.text);
 
     return template;
