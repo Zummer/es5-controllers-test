@@ -3,12 +3,9 @@ var loremIpsum = require('lorem-ipsum')
 
 var FlashModel = function () {
   this.flashes = [];
-  this.selectedFlashes = [];
   this.addFlashEvent = new Event(this);
-  this.removeFlashEvent = new Event(this);
-  this.setFlashesAsCompletedEvent = new Event(this);
   this.deleteFlashesEvent = new Event(this);
-  this.selectFlashEvent = new Event(this);
+  this.toggleSelectEvent = new Event(this);
   this.toggleColorFlashEvent = new Event(this);
 
 };
@@ -48,34 +45,55 @@ FlashModel.prototype = {
   },
 
   getSelectedFlashes: function () {
-    return this.flashes.filter(t => t.selected);
+    return this.flashes.filter(function(t) {
+      return t.selected;
+
+    });
 
   },
   getSelectedRed: function () {
-    return this.getSelectedFlashes().filter(t => t.color === 'danger');
+    return this.getSelectedFlashes().filter(function(t) {
+      return t.color === 'danger';
+
+    });
 
   },
   getSelectedGreen: function () {
-    return this.getSelectedFlashes().filter(t => t.color === 'success');
+    return this.getSelectedFlashes().filter(function(t) {
+      return t.color === 'success';
+
+    });
 
   },
 
   setSelectedFlash: function (id) {
-    var flash = this.flashes.find(t => t.id == id);
+    var flash = this.flashes.find(function(t) {
+      return t.id == id;
+
+    });
+
     flash.selected = !flash.selected;
-    this.selectFlashEvent.notify();
+    this.toggleSelectEvent.notify();
 
   },
 
   toggleColorFlash: function (id) {
-    var flash = this.flashes.find(t => t.id == id);
+    var flash = this.flashes.find(function(t) {
+      return t.id == id;
+
+    });
+
     flash.color = flash.color == 'danger' ? 'success' : 'danger';
     this.toggleColorFlashEvent.notify();
 
   },
 
   deleteFlashes: function (id) {
-    var index = this.flashes.findIndex(t => t.id == id);
+    var index = this.flashes.findIndex(function(t) {
+      return t.id == id;
+
+    });
+
     this.flashes.splice(index, 1);
     this.deleteFlashesEvent.notify(id);
 

@@ -1,2 +1,1 @@
-import less from './style.less'
-
+var less = require('./style.less')

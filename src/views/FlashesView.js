@@ -5,9 +5,7 @@ var Template = require('../templates/flashTemplate')
 var FlashesView = function (model) {
   this.model = model;
   this.addFlashEvent = new Event(this);
-  this.selectFlashEvent = new Event(this);
-  this.unselectFlashEvent = new Event(this);
-  this.completeFlashEvent = new Event(this);
+  this.toggleSelectEvent = new Event(this);
   this.deleteFlashEvent = new Event(this);
   this.toggleColorFlashEvent = new Event(this);
   this.clickTimeout;
@@ -31,7 +29,6 @@ FlashesView.prototype = {
     var templateList = (new Template).flashList();
     this.$parent.append(templateList);
     this.$addFlashButton = $('.js-add-flash-button');
-    this.$flashesContainer = $('.flash-list');
 
     return this;
 
@@ -40,7 +37,7 @@ FlashesView.prototype = {
   setupHandlers: function () {
 
     this.addFlashButtonHandler = this.addFlashButton.bind(this);
-    this.selectOrUnselectFlashHandler = this.selectOrUnselectFlash.bind(this);
+    this.toggleSelectFlashHandler = this.toggleSelectFlash.bind(this);
     this.deleteFlashButtonHandler = this.deleteFlashButton.bind(this);
     this.toggleColorHandler = this.toggleColor.bind(this);
 
@@ -55,7 +52,7 @@ FlashesView.prototype = {
   enable: function () {
 
     this.$addFlashButton.click(this.addFlashButtonHandler);
-    this.$parent.on('click', '.flash-item', this.selectOrUnselectFlashHandler);
+    this.$parent.on('click', '.flash-item', this.toggleSelectFlashHandler);
     this.$parent.on('dblclick', '.flash-item', this.toggleColorHandler);
     this.$parent.on('click', '.close', this.deleteFlashButtonHandler);
 
@@ -79,7 +76,9 @@ FlashesView.prototype = {
     // кнопка удаления содержит id
     var id = $(event.target).attr("data-index");
     var flashes = this.model.getFlashes();
-    var currentFlash = flashes.find(t => t.id == id);
+    var currentFlash = flashes.find(function(t){
+      return t.id == id;
+    });
 
     if (currentFlash.hasOwnProperty('color')) {
       if(!confirm("Вы действительно хотите удалить?")) {
@@ -99,7 +98,10 @@ FlashesView.prototype = {
 
     var id = event.target.id;
     var flashes = this.model.getFlashes();
-    var currentFlash = flashes.find(t => t.id == id);
+    var currentFlash = flashes.find(function(t){
+      return t.id == id;
+
+    });
 
     if (currentFlash.hasOwnProperty('color')) {
       $(event.target).toggleClass('alert-danger');
@@ -113,7 +115,7 @@ FlashesView.prototype = {
 
   },
 
-  selectOrUnselectFlash: function (event) {
+  toggleSelectFlash: function (event) {
 
     clearTimeout(this.clickTimeout);
     // требуется для передачи в функцию через замыкание
@@ -125,7 +127,7 @@ FlashesView.prototype = {
 
         $(event.target).toggleClass('selected');
 
-        self.selectFlashEvent.notify({
+        self.toggleSelectEvent.notify({
           id: id
 
         });
@@ -145,12 +147,17 @@ FlashesView.prototype = {
 
       var flashes = this.model.getFlashes();
       if (args.hasOwnProperty('addId')) {
-        var flash = flashes.find(t => t.id == args.addId);
+        var flash = flashes.find(function(t){
+          return t.id == args.addId;
+
+        });
+
         new Flash(flash);
 
       } else if (args.hasOwnProperty('removeId')) {
 
         $('#' + args.removeId).toggleClass('show');
+
         setTimeout(function () {
           $('#' + args.removeId).remove();
 

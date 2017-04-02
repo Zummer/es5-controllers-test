@@ -5,7 +5,7 @@ function Header (model) {
 
   this.init();
   this.render();
-};
+}
 
 Header.prototype = {
   init: function () {
@@ -33,7 +33,7 @@ Header.prototype = {
   enable: function () {
     /* Event Dispatcher */
     this.model.addFlashEvent.attach(this.render.bind(this));
-    this.model.selectFlashEvent.attach(this.render.bind(this));
+    this.model.toggleSelectEvent.attach(this.render.bind(this));
     this.model.deleteFlashesEvent.attach(this.render.bind(this));
     this.model.toggleColorFlashEvent.attach(this.render.bind(this));
 
@@ -61,6 +61,7 @@ Header.prototype = {
     this.$status = this.$parent.find('.status-bar');
 
   }
-}
+
+};
 
 module.exports = Header;
