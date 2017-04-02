@@ -1,10 +1,15 @@
-const ExtractTextPlugin = require("extract-text-webpack-plugin")
+var ExtractTextPlugin = require("extract-text-webpack-plugin")
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var path = require('path')
 
-const extractLess = new ExtractTextPlugin({
+var extractLess = new ExtractTextPlugin({
   filename: "[name].css"
 });
+
+var htmlPlugin = new HtmlWebpackPlugin({
+  template: './src/index.html'
+});
+
 
 var config = {
   devtool: 'source-map',
@@ -30,9 +35,7 @@ var config = {
     }]
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: './src/index.html'
-    }),
+    htmlPlugin,
     extractLess
   ]
 }

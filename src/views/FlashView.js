@@ -2,7 +2,7 @@ var Event = require('../services/EventDispatcher')
 var Flash = require('../views/Flash')
 var Template = require('../templates/flashTemplate')
 
-var FlashListView = function (model) {
+var FlashView = function (model) {
   this.model = model;
   this.addFlashEvent = new Event(this);
   this.selectFlashEvent = new Event(this);
@@ -16,7 +16,7 @@ var FlashListView = function (model) {
 
 };
 
-FlashListView.prototype = {
+FlashView.prototype = {
 
   init: function () {
     this.createChildren()
@@ -28,10 +28,8 @@ FlashListView.prototype = {
   createChildren: function () {
     // cache the document object
     this.$parent = $('.container');
-
-    var template = (new Template).flashList();
-
-    this.$parent.append(template);
+    var templateList = (new Template).flashList();
+    this.$parent.append(templateList);
     this.$addFlashButton = this.$parent.find('.js-add-flash-button');
     this.$flashesContainer = this.$parent.find('.flash-list');
 
@@ -40,7 +38,6 @@ FlashListView.prototype = {
   },
 
   setupHandlers: function () {
-
 
     this.addFlashButtonHandler = this.addFlashButton.bind(this);
     this.selectOrUnselectFlashHandler = this.selectOrUnselectFlash.bind(this);
@@ -132,6 +129,7 @@ FlashListView.prototype = {
   selectOrUnselectFlash: function (event) {
 
     clearTimeout(this.clickTimeout);
+    // требуется для передачи в функцию через замыкание
     var self = this;
 
     this.clickTimeout = setTimeout(function(){
@@ -149,8 +147,6 @@ FlashListView.prototype = {
 
     }(), 300);
 
-
-
   },
 
   render: function () {
@@ -159,8 +155,8 @@ FlashListView.prototype = {
       this.init();
 
     } else {
+
       var flashes = this.model.getFlashes();
-      var html = "";
       this.$flashesContainer.html('');
 
       for (var key in flashes) {
@@ -203,4 +199,4 @@ FlashListView.prototype = {
 
 };
 
-module.exports = FlashListView;
+module.exports = FlashView;

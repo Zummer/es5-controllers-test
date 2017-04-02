@@ -1,7 +1,7 @@
 var Event = require('../services/EventDispatcher')
 var loremIpsum = require('lorem-ipsum')
 
-var FlashListModel = function () {
+var FlashModel = function () {
   this.flashes = [];
   this.selectedFlashes = [];
   this.addFlashEvent = new Event(this);
@@ -13,7 +13,7 @@ var FlashListModel = function () {
 
 };
 
-FlashListModel.prototype = {
+FlashModel.prototype = {
 
   addFlash: function () {
 
@@ -43,6 +43,21 @@ FlashListModel.prototype = {
     return this.flashes;
 
   },
+
+  getSelectedFlashes: function () {
+    return this.flashes.filter(t => t.selected);
+
+  },
+  getSelectedRed: function () {
+    return this.getSelectedFlashes().filter(t => t.color === 'danger');
+
+  },
+  getSelectedGreen: function () {
+    return this.getSelectedFlashes().filter(t => t.color === 'success');
+
+  },
+
+
 
   setSelectedFlash: function (flashIndex) {
     this.flashes[flashIndex].selected = !this.flashes[flashIndex].selected;
@@ -86,4 +101,4 @@ FlashListModel.prototype = {
 
 };
 
-module.exports = FlashListModel;
+module.exports = FlashModel;

@@ -1,4 +1,4 @@
-var FlashListController = function (model, view) {
+var FlashController = function (model, view) {
   this.model = model;
   this.view = view;
 
@@ -6,7 +6,7 @@ var FlashListController = function (model, view) {
 
 };
 
-FlashListController.prototype = {
+FlashController.prototype = {
 
   init: function () {
     this.createChildren()
@@ -82,4 +82,4 @@ FlashListController.prototype = {
 
 };
 
-module.exports = FlashListController;
+module.exports = FlashController;
