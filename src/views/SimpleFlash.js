@@ -1,34 +1,25 @@
-function SimpleFlash (data, index, deleteClick) {
+function SimpleFlash (data, index) {
   this.data = data;
   this.index = index;
-  this.deleteClick = deleteClick.bind(this, this.index);
 
+  this.render();
 }
 
 SimpleFlash.prototype = {
 
-  init: function () {
-      this.enable();
-
-  },
-
-  enable: function(){
-
-    this.$deleteBtn.click(this.deleteClick);
-    return this;
-  },
-
   render: function () {
     this.$parent = $('.flash-list');
-    this.$flash = $('<li>' + this.data.text + '</li>')
-        .attr('data-index', this.index)
-        .attr('data-flash-selected', false)
-        .addClass("flash alert alert-info")
-    this.$deleteBtn = $('<button class="close">&times;</button>');
+    this.$flash = $('<li>' + this.data.text + '</li>').attr('data-index', this.index)
+        .attr('data-flash-selected', false).addClass("flash-item alert alert-info")
+
+    if (this.data.selected) {
+      this.$flash.addClass('selected');
+    }
+
+    this.$deleteBtn = $('<button class="close">&times;</button>').attr('data-index', this.index);
     this.$flash.append(this.$deleteBtn);
     this.$parent.append(this.$flash);
 
-    this.init();
   }
 
 }

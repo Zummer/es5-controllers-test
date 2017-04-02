@@ -67,8 +67,8 @@ FlashListController.prototype = {
 
   },
 
-  deleteFlash: function (sender, index) {
-    this.model.deleteFlashes(index);
+  deleteFlash: function (sender, args) {
+    this.model.deleteFlashes(args.flashIndex);
 
   }
 

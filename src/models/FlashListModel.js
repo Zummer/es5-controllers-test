@@ -7,7 +7,7 @@ var FlashListModel = function () {
   this.removeFlashEvent = new Event(this);
   this.setFlashesAsCompletedEvent = new Event(this);
   this.deleteFlashesEvent = new Event(this);
-
+  this.selectFlashEvent = new Event(this);
 
 };
 
@@ -15,7 +15,7 @@ FlashListModel.prototype = {
 
   addFlash: function () {
     this.flashes.push({
-      text: 'Какой то текст',
+      text: 'Какой то текст' + Math.random() * (1000 - 1) + 1,
       selected: false
 
     });
@@ -29,7 +29,8 @@ FlashListModel.prototype = {
   },
 
   setSelectedFlash: function (flashIndex) {
-    this.selectedFlashes.push(flashIndex);
+    this.flashes[flashIndex].selected = !this.flashes[flashIndex].selected;
+    this.selectFlashEvent.notify();
 
   },
 

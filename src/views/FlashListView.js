@@ -10,7 +10,7 @@ var FlashListView = function (model) {
   this.completeFlashEvent = new Event(this);
   this.deleteFlashEvent = new Event(this);
 
-  this.init();
+  this.render();
 
 };
 
@@ -25,10 +25,10 @@ FlashListView.prototype = {
 
   createChildren: function () {
     // cache the document object
-    this.$container = $('.container');
-    this.$container.append((new Template).defaultTemplate);
-    this.$addFlashButton = this.$container.find('.js-add-flash-button');
-    this.$flashesContainer = this.$container.find('.flash-list');
+    this.$parent = $('.container');
+    this.$parent.append((new Template).defaultTemplate);
+    this.$addFlashButton = this.$parent.find('.js-add-flash-button');
+    this.$flashesContainer = this.$parent.find('.flash-list');
 
     return this;
 
@@ -45,7 +45,6 @@ FlashListView.prototype = {
 
     this.addFlashHandler = this.addFlash.bind(this);
     this.setFlashesAsCompletedHandler = this.setFlashesAsCompleted.bind(this);
-    this.deleteFlashesHandler = this.deleteFlashes.bind(this);
 
     return this;
 
@@ -54,12 +53,14 @@ FlashListView.prototype = {
   enable: function () {
 
     this.$addFlashButton.click(this.addFlashButtonHandler);
-    this.$container.on('click', '.flash', this.selectOrUnselectFlashHandler);
+    this.$parent.on('click', '.flash-item', this.selectOrUnselectFlashHandler);
+    this.$parent.on('click', '.close', this.deleteFlashButtonHandler);
 
     /* Event Dispatcher */
     this.model.addFlashEvent.attach(this.addFlashHandler);
     this.model.setFlashesAsCompletedEvent.attach(this.setFlashesAsCompletedHandler);
-    this.model.deleteFlashesEvent.attach(this.deleteFlashesHandler);
+    this.model.selectFlashEvent.attach(this.selectFlash.bind(this));
+    this.model.deleteFlashesEvent.attach(this.deleteFlashes.bind(this));
 
     return this;
 
@@ -78,8 +79,15 @@ FlashListView.prototype = {
 
   },
 
-  deleteFlashButton: function (index) {
-    this.deleteFlashEvent.notify(index);
+  deleteFlashButton: function (event) {
+
+    event.stopPropagation();
+
+    var flashIndex = $(event.target).attr("data-index");
+
+    this.deleteFlashEvent.notify({
+      flashIndex: flashIndex
+    });
 
   },
 
@@ -87,48 +95,41 @@ FlashListView.prototype = {
 
     var flashIndex = $(event.target).attr("data-index");
 
-    if ($(event.target).attr('data-flash-selected') == 'false') {
-      $(event.target).attr('data-flash-selected', true);
-      this.selectFlashEvent.notify({
-        flashIndex: flashIndex
+    $(event.target).toggleClass('selected');
 
-      });
+    this.selectFlashEvent.notify({
+      flashIndex: flashIndex
 
-    } else {
-      $(event.target).attr('data-flash-selected', false);
-      this.unselectFlashEvent.notify({
-        flashIndex: flashIndex
-
-      });
-
-    }
+    });
 
 
   },
 
   render: function () {
 
+    if(!$('.flash-list').length){
+      this.init();
 
-    var flashes = this.model.getFlashes();
-    var html = "";
-    this.$flashesContainer.html('');
+    } else {
+      var flashes = this.model.getFlashes();
+      var html = "";
+      this.$flashesContainer.html('');
 
-    for (var key in flashes) {
+      for (var key in flashes) {
 
-      var flash;
+        var flash;
 
-      if (flashes[key].hasOwnProperty('color')) {
-        flash = new SimpleFlash(flashes[key], key, this.deleteFlashButtonHandler);
+        if (flashes[key].hasOwnProperty('color')) {
+          flash = new SimpleFlash(flashes[key], key);
 
-      } else {
-        flash = new SimpleFlash(flashes[key], key, this.deleteFlashButtonHandler);
+        } else {
+          flash = new SimpleFlash(flashes[key], key);
+
+        }
 
       }
 
-      flash.render();
-
     }
-
 
   },
 
@@ -144,15 +145,18 @@ FlashListView.prototype = {
 
   },
 
+  selectFlash: function () {
+    //this.render();
+
+  },
+
   setFlashesAsCompleted: function () {
     this.render();
-
 
   },
 
   deleteFlashes: function () {
     this.render();
-
 
   }
 
