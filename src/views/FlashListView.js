@@ -26,7 +26,10 @@ FlashListView.prototype = {
   createChildren: function () {
     // cache the document object
     this.$parent = $('.container');
-    this.$parent.append((new Template).defaultTemplate);
+
+    var template = (new Template).flashList();
+
+    this.$parent.append(template);
     this.$addFlashButton = this.$parent.find('.js-add-flash-button');
     this.$flashesContainer = this.$parent.find('.flash-list');
 
