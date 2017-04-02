@@ -1,5 +1,5 @@
 var Event = require('../services/EventDispatcher')
-var SimpleFlash = require('../views/SimpleFlash')
+var Flash = require('../views/Flash')
 var Template = require('../templates/flashTemplate')
 
 var FlashListView = function (model) {
@@ -9,6 +9,8 @@ var FlashListView = function (model) {
   this.unselectFlashEvent = new Event(this);
   this.completeFlashEvent = new Event(this);
   this.deleteFlashEvent = new Event(this);
+  this.toggleColorFlashEvent = new Event(this);
+  this.clickTimeout;
 
   this.render();
 
@@ -39,10 +41,12 @@ FlashListView.prototype = {
 
   setupHandlers: function () {
 
+
     this.addFlashButtonHandler = this.addFlashButton.bind(this);
     this.selectOrUnselectFlashHandler = this.selectOrUnselectFlash.bind(this);
     this.completeFlashButtonHandler = this.completeFlashButton.bind(this);
     this.deleteFlashButtonHandler = this.deleteFlashButton.bind(this);
+    this.toggleColorHandler = this.toggleColor.bind(this);
 
     /* Handlers from Event Dispatcher */
 
@@ -57,6 +61,7 @@ FlashListView.prototype = {
 
     this.$addFlashButton.click(this.addFlashButtonHandler);
     this.$parent.on('click', '.flash-item', this.selectOrUnselectFlashHandler);
+    this.$parent.on('dblclick', '.flash-item', this.toggleColorHandler);
     this.$parent.on('click', '.close', this.deleteFlashButtonHandler);
 
     /* Event Dispatcher */
@@ -87,6 +92,14 @@ FlashListView.prototype = {
     event.stopPropagation();
 
     var flashIndex = $(event.target).attr("data-index");
+    var flashes = this.model.getFlashes();
+    var currentFlash = flashes[flashIndex];
+
+    if (currentFlash.hasOwnProperty('color')) {
+      if(!confirm("Вы действительно хотите удалить?")) {
+        return;
+      }
+    }
 
     this.deleteFlashEvent.notify({
       flashIndex: flashIndex
@@ -94,16 +107,48 @@ FlashListView.prototype = {
 
   },
 
-  selectOrUnselectFlash: function () {
+  toggleColor: function () {
+
+    clearTimeout(this.clickTimeout);
 
     var flashIndex = $(event.target).attr("data-index");
+    var flashes = this.model.getFlashes();
+    var currentFlash = flashes[flashIndex];
 
-    $(event.target).toggleClass('selected');
+    if (currentFlash.hasOwnProperty('color')) {
+      $(event.target).toggleClass('alert-danger');
+      $(event.target).toggleClass('alert-success');
 
-    this.selectFlashEvent.notify({
-      flashIndex: flashIndex
+      this.toggleColorFlashEvent.notify({
 
-    });
+        flashIndex: flashIndex
+
+      });
+
+    }
+
+  },
+
+  selectOrUnselectFlash: function (event) {
+
+    clearTimeout(this.clickTimeout);
+    var self = this;
+
+    this.clickTimeout = setTimeout(function(){
+      return function(){
+        var flashIndex = $(event.target).attr("data-index");
+
+        $(event.target).toggleClass('selected');
+
+        self.selectFlashEvent.notify({
+          flashIndex: flashIndex
+
+        });
+
+      }
+
+    }(), 300);
+
 
 
   },
@@ -119,16 +164,7 @@ FlashListView.prototype = {
       this.$flashesContainer.html('');
 
       for (var key in flashes) {
-
-        var flash;
-
-        if (flashes[key].hasOwnProperty('color')) {
-          flash = new SimpleFlash(flashes[key], key);
-
-        } else {
-          flash = new SimpleFlash(flashes[key], key);
-
-        }
+        var flash = new Flash(flashes[key], key);
 
       }
 

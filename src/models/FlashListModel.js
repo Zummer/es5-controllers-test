@@ -1,4 +1,5 @@
 var Event = require('../services/EventDispatcher')
+var loremIpsum = require('lorem-ipsum')
 
 var FlashListModel = function () {
   this.flashes = [];
@@ -8,17 +9,32 @@ var FlashListModel = function () {
   this.setFlashesAsCompletedEvent = new Event(this);
   this.deleteFlashesEvent = new Event(this);
   this.selectFlashEvent = new Event(this);
+  this.toggleColorFlashEvent = new Event(this);
 
 };
 
 FlashListModel.prototype = {
 
   addFlash: function () {
-    this.flashes.push({
-      text: 'Какой то текст' + Math.random() * (1000 - 1) + 1,
-      selected: false
 
-    });
+    var maybeExtendedFlash = Math.random() > 0.5;
+    var flash = {
+      text: loremIpsum({
+        count: 3
+
+      }),
+      selected: false,
+      show: false
+
+    };
+
+    if (maybeExtendedFlash) {
+      var colors = ['danger', 'success'];
+      flash.color = colors[Math.floor(Math.random()*colors.length)];
+
+    }
+
+    this.flashes.push(flash);
     this.addFlashEvent.notify();
 
   },
@@ -31,6 +47,12 @@ FlashListModel.prototype = {
   setSelectedFlash: function (flashIndex) {
     this.flashes[flashIndex].selected = !this.flashes[flashIndex].selected;
     this.selectFlashEvent.notify();
+
+  },
+
+  toggleColorFlash: function (flashIndex) {
+    this.flashes[flashIndex].color = this.flashes[flashIndex].color == 'danger' ? 'success' : 'danger';
+    this.toggleColorFlashEvent.notify();
 
   },
 

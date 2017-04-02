@@ -18,5 +18,7 @@
     "style-loader": "^0.16.1",
     "webpack": "^2.3.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "lorem-ipsum": "^1.0.3"
+  }
 }

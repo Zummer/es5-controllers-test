@@ -11,7 +11,7 @@ function Template() {
 
   }
 
-  this.simpleFlash = function(data, index){
+  this.flash = function(data, index){
 
     var template
       = '<li class="{{initialClass}}" data-index="{{index}}"}>{{text}}'
@@ -20,10 +20,13 @@ function Template() {
 
     var initialClass = "flash-item alert alert-info";
 
+    if(data.color) {
+      initialClass = "flash-item alert alert-" + data.color;
+    }
+
     if (data.selected) {
       initialClass = initialClass + ' selected';
     }
-
 
     template = template.replace(/{{initialClass}}/g, initialClass);
     template = template.replace(/{{index}}/g, index);

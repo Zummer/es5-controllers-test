@@ -1,20 +1,20 @@
 var Template = require('../templates/flashTemplate')
 
-function SimpleFlash (data, index) {
+function Flash (data, index) {
   this.data = data;
   this.index = index;
 
   this.render();
 }
 
-SimpleFlash.prototype = {
+Flash.prototype = {
 
   render: function () {
     this.$parent = $('.flash-list');
-    this.$parent.append((new Template).simpleFlash(this.data, this.index));
+    this.$parent.append((new Template).flash(this.data, this.index));
 
   }
 
 }
 
-module.exports = SimpleFlash;
+module.exports = Flash;

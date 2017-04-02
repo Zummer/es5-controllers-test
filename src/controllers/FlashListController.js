@@ -30,6 +30,7 @@ FlashListController.prototype = {
     this.unselectFlashHandler = this.unselectFlash.bind(this);
     this.completeFlashHandler = this.completeFlash.bind(this);
     this.deleteFlashHandler = this.deleteFlash.bind(this);
+    this.toggleColorFlashHandler = this.toggleColorFlash.bind(this);
     return this;
 
   },
@@ -41,6 +42,7 @@ FlashListController.prototype = {
     this.view.deleteFlashEvent.attach(this.deleteFlashHandler);
     this.view.selectFlashEvent.attach(this.selectFlashHandler);
     this.view.unselectFlashEvent.attach(this.unselectFlashHandler);
+    this.view.toggleColorFlashEvent.attach(this.toggleColorFlashHandler);
 
     return this;
 
@@ -54,6 +56,11 @@ FlashListController.prototype = {
 
   selectFlash: function (sender, args) {
     this.model.setSelectedFlash(args.flashIndex);
+
+  },
+
+  toggleColorFlash: function (sender, args) {
+    this.model.toggleColorFlash(args.flashIndex);
 
   },
 
